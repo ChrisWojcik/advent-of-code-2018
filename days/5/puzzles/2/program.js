@@ -30,42 +30,21 @@ function getLengthOfShortestPossiblePolymer(input) {
   return shortestLength;
 }
 
-function getResultingPolymerChainLength(input) {
-  let canReact = true;
-  let resultOfReaction;
-  let resultOfLastReaction = input;
-
-  while (canReact) {
-    resultOfReaction = react(resultOfLastReaction);
-
-    if (resultOfReaction.length === resultOfLastReaction.length) {
-      canReact = false;
-    }
-
-    resultOfLastReaction = resultOfReaction;
-  }
-
-  return resultOfLastReaction.length;
-}
-
-function react(chain) {
-  let previousUnit;
+function getResultingPolymerChainLength(chain) {
+  let resultingChain = [];
 
   for (let i = 0; i < chain.length; i++) {
     const unit = chain[i];
+    const previousUnit = resultingChain[resultingChain.length - 1];
 
     if (previousUnit && Math.abs(unit - previousUnit) === CHARACTER_DIFFERENCE) {
-      if (i === 1) {
-        return chain.slice(2);
-      } else {
-        return chain.slice(0, i - 1).concat((i === chain.length - 1) ? [] : chain.slice(i + 1));
-      }
+      resultingChain.pop();
+    } else {
+      resultingChain.push(unit);
     }
-
-    previousUnit = unit;
   }
 
-  return chain;
+  return resultingChain.length;
 }
 
 function toCharCodes(input) {
