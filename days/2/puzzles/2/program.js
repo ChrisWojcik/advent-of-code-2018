@@ -1,14 +1,24 @@
-let input = '';
+const readline = require('readline');
 
-process.stdin.on('data', chunk => input += chunk);
+const ids = [];
 
-process.stdin.on('end', () => {
-  console.log(getCommonLettersOfCorrectBoxes(input));
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
 });
 
-function getCommonLettersOfCorrectBoxes(input) {
-  const ids = input.split(/\r?\n/);
+rl.on('line', line => {
+  if (line) {
+    ids.push(line);
+  }
+});
 
+rl.on('close', () => {
+  console.log(getCommonLettersOfCorrectBoxes(ids));
+});
+
+function getCommonLettersOfCorrectBoxes(ids) {
   for (let i = 0; i < ids.length; i++) {
     const idA = ids[i];
 

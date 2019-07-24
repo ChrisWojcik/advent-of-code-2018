@@ -1,17 +1,25 @@
-let input = '';
+const readline = require('readline');
+
+const frequencies = [];
 let STARTING_FREQUENCY = 0;
 
-process.stdin.on('data', chunk => input += chunk);
-
-process.stdin.on('end', () => {
-  console.log(getResult(input));
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
 });
 
-function getResult(input) {
-  const frequencies = input.split(/\r?\n/)
-    .map(text => parseInt(text, 10))
-    .filter(frequency => frequency); // NaN is falsy
+rl.on('line', line => {
+  if (line) {
+    frequencies.push(parseInt(line, 10));
+  }
+});
 
+rl.on('close', () => {
+  console.log(getResult(frequencies));
+});
+
+function getResult(frequencies) {
   const intermediateFrequencies = { [STARTING_FREQUENCY]: true };
   let solutionFound = false;
   let i = 0;

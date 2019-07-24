@@ -1,9 +1,20 @@
-let input = '';
+const readline = require('readline');
 
-process.stdin.on('data', chunk => input += chunk);
+const claims = [];
 
-process.stdin.on('end', () => {
-  const claims = input.trim().split(/\r?\n/);
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', line => {
+  if (line) {
+    claims.push(line);
+  }
+});
+
+rl.on('close', () => {
   console.log(getIdOfNonOverlappingClaim(claims));
 });
 
