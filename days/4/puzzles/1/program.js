@@ -9,7 +9,11 @@ const rl = readline.createInterface({
 
 rl.on('line', line => {
   if (line) {
-    records.push(line);
+    const captures = line.match(/^\[(.*)\] (.*)$/);
+    const timestamp = new Date(captures[1]);
+    const message = captures[2];
+
+    records.push({ timestamp, message });
   }
 });
 
@@ -18,13 +22,7 @@ rl.on('close', () => {
 });
 
 function getGuardIdMultipliedByMinute(records) {
-  const data = records.map(record => {
-    const captures = record.match(/^\[(.*)\] (.*)$/);
-    const timestamp = new Date(captures[1]);
-    const message = captures[2];
-
-    return { timestamp, message };
-  }).sort((a, b) => {
+  const data = records.sort((a, b) => {
     return a.timestamp - b.timestamp;
   });
 
