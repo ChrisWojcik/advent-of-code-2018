@@ -6,7 +6,7 @@ const rl = readline.createInterface({
   terminal: false
 });
 
-const prerequisitiesForStep = {};
+const graph = {};
 
 rl.on('line', line => {
   if (line) {
@@ -14,9 +14,10 @@ rl.on('line', line => {
     const step = matches[2];
     const requiredStep = matches[1];
 
-    prerequisitiesForStep[step] = prerequisitiesForStep[step] || [];
-    prerequisitiesForStep[requiredStep] = prerequisitiesForStep[requiredStep] || [];
-    prerequisitiesForStep[step].push(requiredStep);
+    graph[requiredStep] = graph[requiredStep] || { in: {}, out: {} };
+    graph[requiredStep].out[step] = true;
+    graph[step] = graph[step] || { in: {}, out: {} };
+    graph[step].in[requiredStep] = true;
   }
 });
 
@@ -27,26 +28,29 @@ rl.on('close', () => {
 function getStepsInOrder() {
   const availableSteps = [];
   const stepsInOrder = [];
-  const numberOfSteps = Object.keys(prerequisitiesForStep).length;
 
-  for (let i = 0; i < numberOfSteps; i++) {
-    Object.keys(prerequisitiesForStep).forEach(step => {
-      const prerequisites = prerequisitiesForStep[step];
-
-      for (let i = 0; i < prerequisites.length; i++) {
-        const prerequisite = prerequisites[i];
-
-        if (stepsInOrder.indexOf(prerequisite) === -1) {
-          return;
-        }
-      }
-
+  Object.keys(graph).forEach(step => {
+    if (Object.keys(graph[step].in).length == 0) {
       availableSteps.push(step);
-      delete prerequisitiesForStep[step];
+    }
+  });
+
+  availableSteps.sort();
+
+  while (availableSteps.length > 0) {
+    const nextStep = availableSteps.shift();
+    stepsInOrder.push(nextStep);
+
+    Object.keys(graph[nextStep].out).forEach(step => {
+      delete graph[nextStep].out[step];
+      delete graph[step].in[nextStep];
+
+      if (Object.keys(graph[step].in).length === 0) {
+        availableSteps.push(step);
+      }
     });
 
     availableSteps.sort();
-    stepsInOrder.push(availableSteps.shift());
   }
 
   return stepsInOrder.join('');
