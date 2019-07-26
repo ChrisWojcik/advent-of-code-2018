@@ -22,7 +22,7 @@ rl.on('line', line => {
 });
 
 rl.on('close', () => {
-  console.log(getStepsInOrder());
+  console.log(getStepsInOrder().join(''));
 });
 
 function getStepsInOrder() {
@@ -53,5 +53,5 @@ function getStepsInOrder() {
     availableSteps.sort();
   }
 
-  return stepsInOrder.join('');
+  return stepsInOrder;
 }
